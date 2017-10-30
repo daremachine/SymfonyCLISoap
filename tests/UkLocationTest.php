@@ -5,6 +5,7 @@ namespace Tests;
 
 use PHPUnit\Framework\TestCase;
 use UkLocation\Exceptions\BadCountParametersException;
+use UkLocation\Exceptions\WsdlNotLoadException;
 use UkLocation\SoapClient;
 
 require_once  './vendor/autoload.php';
@@ -61,7 +62,7 @@ class UkLocationTest extends TestCase
 
     public function testSoapClientConnectionDownShouldFail()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(WsdlNotLoadException::class);
 
         $towns = ['failingName0', 'failingName0', 'failingName0'];
         $soapClient = new SoapClient(self::TEST_WSDL_REMOTE_FAIL);
