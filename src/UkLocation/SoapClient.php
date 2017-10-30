@@ -35,26 +35,28 @@ class SoapClient
         // check correct parameters count
         if(count($towns) < 2 || count($towns) > 3) throw new BadCountParametersException("Please input minimum two and maximum three towns");
 
-        try {
-            $soapClient = new \SoapClient($this->wsdl);
-            $response = $soapClient->GetUKLocationByTown(['Town' => 'formby']);
+        $result = [];
 
-            $xmlResult = simplexml_load_string($response->GetUKLocationByTownResult);
+        foreach($towns as $town) {
+            try {
+                $soapClient = new \SoapClient($this->wsdl);
+                $response = $soapClient->GetUKLocationByTown(['Town' => $town]);
 
-            $result = [];
+                $xmlResult = simplexml_load_string($response->GetUKLocationByTownResult);                
 
-            foreach($xmlResult as $row)
-            {
-                $result[] = $row->PostCode;
+                foreach($xmlResult as $row)
+                {
+                    $result[] = $row->PostCode;
+                }
+            } catch (\SoapFault $sf) {
+                if ($sf->faultcode == 'WSDL') {
+                    throw new WsdlNotLoadException("Wsdl couldn't be loaded due to bad WSDL endpoint path or endpoint may be offline.");
+                }
+
+                throw new \Exception($sf->getMessage());
             }
-
-            return $result;
-        } catch (\SoapFault $sf) {
-            if ($sf->faultcode == 'WSDL') {
-                throw new WsdlNotLoadException("Wsdl couldn't be loaded due to bad WSDL endpoint path or endpoint may be offline.");
-            }
-
-            throw new \Exception($sf->getMessage());
         }
+
+        return $result;
     }
 }
