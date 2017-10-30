@@ -11,7 +11,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use UkLocation\Exceptions\IException;
 use UkLocation\SoapClient;
 
-class GetUKLocationByTownCommand extends Command
+class GetUKLocationByTownsCommand extends Command
 {
     protected function configure()
     {
@@ -22,11 +22,28 @@ class GetUKLocationByTownCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $output = new SymfonyStyle($input, $output);
+
         $towns = $input->getArgument('Towns');
 
-        foreach ($towns as $town)
-        {
-            $output->writeln($town);
+        try {
+            $soapClient = new SoapClient();
+            $data = $soapClient->GetUkLocationByTown($towns);
+
+            // print output
+            $output->success("Search complete.");
+
+            foreach($data->getTownLocations() as $row)
+            {
+                $output->writeln("Town: {$row->getTown()} {$row->getCounty()}, PostCode: {$row->getPostCode()}");
+            }
+
+            foreach($data->getNotices() as $row)
+            {
+                $output->writeln("No results found for town {$row->getTown()}.");
+            }
+        } catch(IException $e) {
+            $output->write("<error>{$e->getMessage()}</error>");
         }
     }
 }
