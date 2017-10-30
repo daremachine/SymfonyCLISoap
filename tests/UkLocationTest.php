@@ -17,7 +17,7 @@ class UkLocationTest extends TestCase
     public function testGetUkLocationByTownsCommand()
     {
         $tester = \Tests\TestBootstrapFactory::create("UkLocation:GetUKLocationByTowns", [
-            'Towns' => ['formby', 'a']
+            'Towns' => ['formby', 'failingName0']
         ]);
 
         $result = $tester->getDisplay();
