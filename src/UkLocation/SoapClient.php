@@ -44,9 +44,8 @@ class SoapClient
 
                 $xmlResult = simplexml_load_string($response->GetUKLocationByTownResult);                
 
-                foreach($xmlResult as $row)
-                {
-                    $result[] = $row->PostCode;
+                foreach ($xmlResult as $el) {
+                    $result[] = new UkTownLocation((string) $el->Town, (string) $el->County, (string) $el->PostCode);
                 }
             } catch (\SoapFault $sf) {
                 if ($sf->faultcode == 'WSDL') {
