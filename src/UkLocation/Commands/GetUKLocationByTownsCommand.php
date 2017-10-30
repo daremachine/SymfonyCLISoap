@@ -22,12 +22,15 @@ class GetUKLocationByTownsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $output = new SymfonyStyle($input, $output);
+
         $towns = $input->getArgument('Towns');
 
         $soapClient = new SoapClient();
         $data = $soapClient->GetUkLocationByTown($towns);
 
-        $output->writeln("ok.");
+        // print output
+        $output->success("Search complete.");
 
         foreach ($data as $postcode)
         {
