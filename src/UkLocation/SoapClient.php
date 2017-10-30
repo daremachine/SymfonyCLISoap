@@ -27,7 +27,7 @@ class SoapClient
      * @return UkTownLocationResponse
      * @throws \Exception
      */
-    public function GetUkLocationByTown(array $towns : array
+    public function GetUkLocationByTown(array $towns) : array
     {
         $soapClient = new \SoapClient($this->wsdl);
         $response = $soapClient->GetUKLocationByTown(['Town' => 'formby']);
