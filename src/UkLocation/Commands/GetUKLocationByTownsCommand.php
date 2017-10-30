@@ -33,12 +33,17 @@ class GetUKLocationByTownsCommand extends Command
             // print output
             $output->success("Search complete.");
 
-            foreach ($data as $row)
+            foreach($data->getTownLocations() as $row)
             {
                 $output->writeln("Town: {$row->getTown()} {$row->getCounty()}, PostCode: {$row->getPostCode()}");
             }
+
+            foreach($data->getNotices() as $row)
+            {
+                $output->writeln("No results found for town {$row->getTown()}.");
+            }
         } catch(IException $e) {
             $output->write("<error>{$e->getMessage()}</error>");
-        }        
+        }
     }
 }

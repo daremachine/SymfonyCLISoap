@@ -30,22 +30,26 @@ class SoapClient
      * @return UkTownLocationResponse
      * @throws \Exception
      */
-    public function GetUkLocationByTown(array $towns) : array
+    public function GetUkLocationByTown(array $towns) : UkTownLocationResponse
     {
         // check correct parameters count
         if(count($towns) < 2 || count($towns) > 3) throw new BadCountParametersException("Please input minimum two and maximum three towns");
 
-        $result = [];
+        $searchResult = [];
+        $emptyResult = [];
 
         foreach($towns as $town) {
             try {
                 $soapClient = new \SoapClient($this->wsdl);
                 $response = $soapClient->GetUKLocationByTown(['Town' => $town]);
 
-                $xmlResult = simplexml_load_string($response->GetUKLocationByTownResult);                
+                $xmlResult = simplexml_load_string($response->GetUKLocationByTownResult);
 
+                if(empty($xmlResult)) {
+                    $emptyResult[] = new UkTownLocationEmpty($town);
+                }
                 foreach ($xmlResult as $el) {
-                    $result[] = new UkTownLocation((string) $el->Town, (string) $el->County, (string) $el->PostCode);
+                    $searchResult[] = new UkTownLocation((string) $el->Town, (string) $el->County, (string) $el->PostCode);
                 }
             } catch (\SoapFault $sf) {
                 if ($sf->faultcode == 'WSDL') {
@@ -56,6 +60,6 @@ class SoapClient
             }
         }
 
-        return $result;
+        return new UkTownLocationResponse($searchResult, $emptyResult);
     }
 }
