@@ -26,15 +26,19 @@ class GetUKLocationByTownsCommand extends Command
 
         $towns = $input->getArgument('Towns');
 
-        $soapClient = new SoapClient();
-        $data = $soapClient->GetUkLocationByTown($towns);
+        try {
+            $soapClient = new SoapClient();
+            $data = $soapClient->GetUkLocationByTown($towns);
 
-        // print output
-        $output->success("Search complete.");
+            // print output
+            $output->success("Search complete.");
 
-        foreach ($data as $postcode)
-        {
-            $output->writeln($postcode);
-        }
+            foreach ($data as $postcode)
+            {
+                $output->writeln($postcode);
+            }
+        } catch(IException $e) {
+            $output->write("<error>{$e->getMessage()}</error>");
+        }        
     }
 }
