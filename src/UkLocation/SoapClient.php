@@ -26,7 +26,6 @@ class SoapClient
     /**
      * Get Uk postcodes by town name
      * @param array $towns
-     * @param string $wsdl
      * @return UkTownLocationResponse
      * @throws \Exception
      */
