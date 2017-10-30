@@ -11,6 +11,9 @@ require_once  './tests/TestBootstrapFactory.php';
 
 class UkLocationTest extends TestCase
 {
+    const TEST_WSDL_REMOTE = 'http://www.webservicex.net/uklocation.asmx?WSDL';
+    const TEST_WSDL_REMOTE_FAIL = 'http://www.webservicex.net/invalid.tld?WSDL';
+
     public function testGetUkLocationByTownsCommand()
     {
         $tester = \Tests\TestBootstrapFactory::create("UkLocation:GetUKLocationByTowns", [
